@@ -913,7 +913,7 @@ class Component(Device):
         self,
         show_ports: bool = True,
         show_subports: bool = False,
-        port_marker_layer: Layer = (1, 12),
+        port_marker_layer: Layer = "PORT_MARKER",
     ) -> None:
         """Show component in klayout.
 

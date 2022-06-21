@@ -330,7 +330,7 @@ def port_array(
     ]
 
 
-def read_port_markers(component: object, layers: LayerSpecs = ((1, 10),)) -> Component:
+def read_port_markers(component: object, layers: LayerSpecs = ("PORT",)) -> Component:
     """Loads a GDS and returns the extracted ports from layer markers
 
     Args:
