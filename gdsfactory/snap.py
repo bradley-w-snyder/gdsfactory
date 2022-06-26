@@ -17,7 +17,7 @@ def assert_on_2nm_grid(x: float) -> None:
     assert np.isclose(x_grid, x), f"{x} needs to be on 2nm grid, try {x_grid}"
 
 
-def snap_to_grid(x: float, nm: int = 1) -> float:
+def snap_to_grid(x: float, nm: int = 5) -> float:
     y = nm * np.round(np.array(x, dtype=float) * 1e3 / nm) / 1e3
     if isinstance(x, tuple):
         return tuple(y)

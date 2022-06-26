@@ -51,7 +51,7 @@ def bezier(
     spike_length: float = 0.0,
     start_angle: Optional[int] = None,
     end_angle: Optional[int] = None,
-    grid: float = 0.001,
+    grid: float = 0.005,
 ) -> Component:
     """Returns Bezier bend.
 
