@@ -4,7 +4,7 @@ import phidl.geometry as pg
 
 import gdsfactory as gf
 from gdsfactory.component import Component
-from gdsfactory.types import ComponentOrReference, Int2, Layer
+from gdsfactory.types import ComponentOrReference, Int2, LayerSpec
 
 
 @gf.cell
@@ -15,7 +15,7 @@ def boolean(
     precision: float = 1e-4,
     num_divisions: Union[int, Int2] = (1, 1),
     max_points: int = 4000,
-    layer: Layer = (1, 0),
+    layer: LayerSpec = (1, 0),
 ) -> Component:
     """Performs boolean operations between 2 Component/Reference objects, or \
     lists of Devices/DeviceReferences.
@@ -47,8 +47,10 @@ def boolean(
     'A+B' is equivalent to 'or'.
     'A-B' is equivalent to 'not'.
     'B-A' is equivalent to 'not' with the operands switched.
-
     """
+
+    layer = gf.pdk.get_layer(layer)
+
     A = list(A) if isinstance(A, tuple) else A
     B = list(B) if isinstance(B, tuple) else B
 
