@@ -223,7 +223,12 @@ def grating_coupler_elliptical(
     )
 
     c.add_port(
-        name="o1", midpoint=(x_output, 0), width=wg_width, orientation=180, layer=layer
+        name="o1",
+        midpoint=(x_output, 0),
+        width=wg_width,
+        orientation=180,
+        layer=layer,
+        cross_section="strip",
     )
 
     if layer_slab:
