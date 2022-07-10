@@ -137,8 +137,6 @@ def grating_coupler_elliptical(
     wg_width = xs.width
     layer = xs.layer
 
-    print(layer)
-
     # Compute some ellipse parameters
     sthc = np.sin(fiber_angle * DEG2RAD)
     d = neff**2 - nclad**2 * sthc**2
@@ -225,7 +223,12 @@ def grating_coupler_elliptical(
     )
 
     c.add_port(
-        name="o1", midpoint=(x_output, 0), width=wg_width, orientation=180, layer=layer
+        name="o1",
+        midpoint=(x_output, 0),
+        width=wg_width,
+        orientation=180,
+        layer=layer,
+        cross_section="strip",
     )
 
     if layer_slab:
