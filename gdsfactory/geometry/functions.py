@@ -169,7 +169,7 @@ def extrude_path(
     spike_length: Union[float64, int, float] = 0,
     start_angle: Optional[int] = None,
     end_angle: Optional[int] = None,
-    grid: float = 0.001,
+    grid: float = 0.005,
 ) -> ndarray:
     """Deprecated. Use gf.path instead
     Extrude a path of width `width` along a curve defined by `points`
