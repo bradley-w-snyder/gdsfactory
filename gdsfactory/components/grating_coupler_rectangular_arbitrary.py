@@ -94,9 +94,7 @@ def grating_coupler_rectangular_arbitrary(
         xi = 0
 
     widths = gf.snap.snap_to_grid(widths)
-    print(widths)
     gaps = gf.snap.snap_to_grid(gaps)
-    print(gaps)
 
     for width, gap in zip(widths, gaps):
         xi += gap
