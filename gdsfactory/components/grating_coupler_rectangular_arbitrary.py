@@ -98,7 +98,6 @@ def grating_coupler_rectangular_arbitrary(
 
     for width, gap in zip(widths, gaps):
         xi += gap
-        print(width)
         cgrating = c.add_polygon(
             [
                 (0.0, 0.0),
