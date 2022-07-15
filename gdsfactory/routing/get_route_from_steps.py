@@ -4,7 +4,6 @@ import numpy as np
 
 import gdsfactory as gf
 from gdsfactory.components.via_corner import via_corner
-from gdsfactory.cross_section import strip
 from gdsfactory.port import Port
 from gdsfactory.routing.manhattan import round_corners
 from gdsfactory.types import (
@@ -22,7 +21,7 @@ def get_route_from_steps(
     bend: ComponentSpec = "bend_euler",
     straight: ComponentSpec = "straight",
     taper: Optional[ComponentSpec] = "taper",
-    cross_section: Union[CrossSectionSpec, MultiCrossSectionAngleSpec] = strip,
+    cross_section: Union[CrossSectionSpec, MultiCrossSectionAngleSpec] = "strip",
     **kwargs
 ) -> Route:
     """Returns a route formed by the given waypoints steps.
