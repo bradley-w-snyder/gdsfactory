@@ -1033,6 +1033,9 @@ class Component(Device):
                 "overwrite": overwrite all duplicate cells with one of the duplicates, without warning.
                 None: do not try to resolve (at your own risk!)
         """
+        from gdsfactory.pdk import get_grid_size
+
+        precision = precision or get_grid_size() * 1e-6
         gdsdir = (
             gdsdir or pathlib.Path(tempfile.TemporaryDirectory().name) / "gdsfactory"
         )
