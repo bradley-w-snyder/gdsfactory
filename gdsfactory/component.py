@@ -358,7 +358,10 @@ class Component(Device):
 
         return get_netlist_recursive(component=self, **kwargs)
 
-    def assert_ports_on_grid(self, nm: int = 1) -> None:
+    def assert_ports_on_grid(self, nm: int = 0) -> None:
+        from gdsfactory.pdk import get_grid_size
+
+        nm = nm or int(get_grid_size() * 1000)
         """Asserts that all ports are on grid."""
         for port in self.ports.values():
             port.assert_on_grid(nm=nm)
@@ -514,7 +517,11 @@ class Component(Device):
             if midpoint is None:
                 raise ValueError("Port needs midpoint parameter (x, y) um.")
             half_width = width / 2
-            half_width_correct = snap_to_grid(half_width, nm=1)
+            from gdsfactory.pdk import get_grid_size
+
+            half_width_correct = snap_to_grid(
+                half_width, nm=int(get_grid_size() * 1000)
+            )
             if not np.isclose(half_width, half_width_correct):
                 warnings.warn(
                     f"port width = {width} will create off-grid points.\n"
@@ -555,7 +562,10 @@ class Component(Device):
             name = f"{prefix}{port.name}" if prefix else port.name
             self.add_port(name=name, port=port)
 
-    def snap_ports_to_grid(self, nm: int = 1) -> None:
+    def snap_ports_to_grid(self, nm: int = 0) -> None:
+        from gdsfactory.pdk import get_grid_size
+
+        nm = nm or int(get_grid_size() * 1000)
         for port in self.ports.values():
             port.snap_to_grid(nm=nm)
 
