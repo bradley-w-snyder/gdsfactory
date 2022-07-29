@@ -587,6 +587,9 @@ class Component(_GeometryHelper):
         return get_netlist_flat(component=self, **kwargs)
 
     def assert_ports_on_grid(self, nm: int = 1) -> None:
+        from gdsfactory.pdk import get_grid_size
+
+        nm = nm or int(get_grid_size() * 1000)
         """Asserts that all ports are on grid."""
         for port in self.ports.values():
             port.assert_on_grid(nm=nm)
@@ -825,7 +828,10 @@ class Component(_GeometryHelper):
             name = f"{prefix}{port.name}" if prefix else port.name
             self.add_port(name=name, port=port)
 
-    def snap_ports_to_grid(self, nm: int = 1) -> None:
+    def snap_ports_to_grid(self, nm: int = 0) -> None:
+        from gdsfactory.pdk import get_grid_size
+
+        nm = nm or int(get_grid_size() * 1000)
         for port in self.ports.values():
             port.snap_to_grid(nm=nm)
 
