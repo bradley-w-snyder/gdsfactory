@@ -121,6 +121,9 @@ def spiral_circular(
     x_sp = np.concatenate([x_1[:0:-1], x_inner_1[:-1], x_inner_2[-2:0:-1], x_2])
     y_sp = np.concatenate([y_1[:0:-1], y_inner_1[:-1], y_inner_2[-2:0:-1], y_2])
 
+    x_sp = snap_to_grid(x_sp)
+    y_sp = snap_to_grid(y_sp)
+
     p_spiral = gds.PolyPath(
         np.c_[x_sp, y_sp], wg_width, layer=wg_layer, datatype=wg_datatype
     )
