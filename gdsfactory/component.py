@@ -1018,7 +1018,7 @@ class Component(Device):
         gdspath: Optional[PathType] = None,
         gdsdir: Optional[PathType] = None,
         unit: float = 1e-6,
-        precision: float = 1e-9,
+        precision: float = 0.0,
         timestamp: Optional[datetime.datetime] = _timestamp2019,
         logging: bool = True,
         on_duplicate_cell: Optional[str] = "warn",
