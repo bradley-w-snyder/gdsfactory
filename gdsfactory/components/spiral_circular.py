@@ -102,7 +102,7 @@ def spiral_circular(
     end_2 = (x_2[0], y_2[0])
 
     # Inner bend
-    theta_inner = np.linspace(360.0 * inner_revs, 360.0 * inner_revs - 180.0, 50)
+    theta_inner = np.linspace(360.0 * inner_revs, 360.0 * inner_revs - 180.0, 250)
     radii_inner_1 = min_bend_radius
     radii_inner_2 = -min_bend_radius
     x_inner_1, y_inner_1 = pol_to_rect(radii_inner_1, theta_inner)
