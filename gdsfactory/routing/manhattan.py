@@ -14,6 +14,7 @@ from gdsfactory.components.taper import taper as taper_function
 from gdsfactory.cross_section import strip
 from gdsfactory.geometry.functions import angles_deg
 from gdsfactory.port import Port, select_ports_list
+from gdsfactory.routing.get_route_sbend import get_route_sbend
 from gdsfactory.snap import snap_to_grid
 from gdsfactory.tech import LAYER
 from gdsfactory.types import (
@@ -533,12 +534,30 @@ def get_route_error(
     layer_label: Layer = LAYER.TEXT,
     layer_marker: Layer = LAYER.ERROR_MARKER,
     references: Optional[List[ComponentReference]] = None,
+    with_sbend: bool = False,
 ) -> Route:
+    """Returns route with error markers.
+
+    Args:
+        points: route waypoints.
+        cross_section: Optional cross_section.
+        layer_path: for the error.
+        layer_label: for the labels.
+        layer_marker: for point markers.
+        references: optional list of references.
+        with_sbend: if True raises Error so we can use it in try, except
+            if False raises Warning.
+    """
+    layer_path = gf.get_layer(layer_path)
+    layer_label = gf.get_layer(layer_label)
+    layer_marker = gf.get_layer(layer_marker)
+
     width = cross_section.width if cross_section else 10
-    warnings.warn(
-        f"Route error for points {points}",
-        RouteWarning,
-    )
+
+    if with_sbend:
+        raise RouteError(f"route error for points {points}")
+    else:
+        warnings.warn(f"Route error for points {points}", RouteWarning)
 
     c = Component(f"route_{uuid.uuid4()}"[:16])
     path = gdspy.FlexPath(
@@ -585,6 +604,7 @@ def round_corners(
     on_route_error: Callable = get_route_error,
     with_point_markers: bool = False,
     snap_to_grid_nm: Optional[int] = 1,
+    with_sbend: bool = False,
     **kwargs,
 ) -> Route:
     """Returns Route.
@@ -605,6 +625,7 @@ def round_corners(
         on_route_error: function to run when route fails.
         with_point_markers: add route points markers (easy for debugging).
         snap_to_grid_nm: nm to snap to grid.
+        with_sbend: add sbend in case there are routing errors.
         kwargs: cross_section settings.
 
     """
@@ -699,7 +720,9 @@ def round_corners(
     if bend_orientation is None:
         print(f"bend_orientation is None {p0_straight} {p1}")
         return on_route_error(
-            points=points, cross_section=x if not multi_cross_section else None
+            points=points,
+            cross_section=x if not multi_cross_section else None,
+            with_sbend=with_sbend,
         )
 
     try:
@@ -763,6 +786,7 @@ def round_corners(
                 points=(p0_straight, bend_origin),
                 cross_section=x if not multi_cross_section else None,
                 references=references,
+                with_sbend=with_sbend,
             )
 
         p0_straight = bend_ref.ports[pname_north].center
@@ -784,15 +808,8 @@ def round_corners(
             points=(p0_straight, points[-1]),
             cross_section=x if not multi_cross_section else None,
             references=references,
+            with_sbend=with_sbend,
         )
-
-    # with_point_markers=True
-    # print()
-    # for i, point in enumerate(points):
-    #     print(i, point)
-    # print()
-    # for i, point in enumerate(bend_points):
-    #     print(i, point)
 
     # ensure bend connectivity
     for i, point in enumerate(points[:-1]):
@@ -805,6 +822,7 @@ def round_corners(
                 points=points,
                 cross_section=x if not multi_cross_section else None,
                 references=references,
+                with_sbend=with_sbend,
             )
 
     wg_refs = []
@@ -994,14 +1012,30 @@ def route_manhattan(
     end_straight_length: Optional[float] = None,
     min_straight_length: Optional[float] = None,
     bend: ComponentSpec = bend_euler,
+    with_sbend: bool = True,
     cross_section: Union[CrossSectionSpec, MultiCrossSectionAngleSpec] = strip,
     with_point_markers: bool = False,
+    on_route_error: Callable = get_route_error,
     **kwargs,
 ) -> Route:
     """Generates the Manhattan waypoints for a route.
 
     Then creates the straight, taper and bend references that define the
-    route.
+    route, or create an SBend route.
+
+    Args:
+        input_port: input.
+        output_port: output.
+        straight: function.
+        taper: add taper.
+        start_straight_length: in um.
+        end_straight_length: in um.
+        min_straight_length: min length of straight for any intermediate segment.
+        bend: bend spec.
+        with_sbend: add sbend in case there are routing errors.
+        cross_section: spec.
+        with_point_markers: add point markers in the route.
+        kwargs: cross_section settings.
 
     """
     if isinstance(cross_section, list):
@@ -1015,23 +1049,32 @@ def route_manhattan(
         end_straight_length = end_straight_length or x.min_length
         min_straight_length = min_straight_length or x.min_length
 
-    points = generate_manhattan_waypoints(
-        input_port,
-        output_port,
-        start_straight_length=start_straight_length,
-        end_straight_length=end_straight_length,
-        min_straight_length=min_straight_length,
-        bend=bend,
-        cross_section=x,
-    )
-    return round_corners(
-        points=points,
-        straight=straight,
-        taper=taper,
-        bend=bend,
-        cross_section=x,
-        with_point_markers=with_point_markers,
-    )
+    try:
+        points = generate_manhattan_waypoints(
+            input_port,
+            output_port,
+            start_straight_length=start_straight_length,
+            end_straight_length=end_straight_length,
+            min_straight_length=min_straight_length,
+            bend=bend,
+            cross_section=x,
+        )
+        route = round_corners(
+            points=points,
+            straight=straight,
+            taper=taper,
+            bend=bend,
+            cross_section=x,
+            with_point_markers=with_point_markers,
+            with_sbend=with_sbend,
+        )
+        return route
+
+    except RouteError:
+        if with_sbend:
+            return get_route_sbend(input_port, output_port, cross_section=x)
+
+    return get_route_error(points=points, with_sbend=False)
 
 
 if __name__ == "__main__":

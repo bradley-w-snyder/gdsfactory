@@ -113,6 +113,7 @@ def get_route_from_steps(
         bend=bend,
         taper=taper,
         cross_section=cross_section,
+        with_sbend=False,
         **kwargs,
     )
 

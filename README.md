@@ -1,7 +1,8 @@
-# gdsfactory 5.18.5
+# gdsfactory 5.28.1
 
 [![docs](https://github.com/gdsfactory/gdsfactory/actions/workflows/pages.yml/badge.svg)](https://gdsfactory.github.io/gdsfactory/)
-[![pypi](https://img.shields.io/pypi/v/gdsfactory)](https://pypi.org/project/gdsfactory/)
+[![PyPI](https://img.shields.io/pypi/v/gdsfactory)](https://pypi.org/project/gdsfactory/)
+[![Conda Version](https://img.shields.io/conda/vn/conda-forge/gdsfactory.svg)](https://anaconda.org/conda-forge/gdsfactory)
 [![PyPI Python](https://img.shields.io/pypi/pyversions/gdsfactory.svg)](https://pypi.python.org/pypi/gdsfactory)
 [![issues](https://img.shields.io/github/issues/gdsfactory/gdsfactory)](https://github.com/gdsfactory/gdsfactory/issues)
 [![forks](https://img.shields.io/github/forks/gdsfactory/gdsfactory.svg)](https://github.com/gdsfactory/gdsfactory/network/members)
@@ -12,7 +13,7 @@
 [![MIT](https://img.shields.io/github/license/gdsfactory/gdsfactory)](https://choosealicense.com/licenses/mit/)
 [![codecov](https://img.shields.io/codecov/c/github/gdsfactory/gdsfactory)](https://codecov.io/gh/gdsfactory/gdsfactory/tree/master/gdsfactory)
 [![black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/gdsfactory/gdsfactory/HEAD)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/gdsfactory/binder-sandbox/HEAD)
 
 ![](https://i.imgur.com/v4wpHpg.png)
 
@@ -48,15 +49,15 @@ You can also write components settings (for measurement and data analysis) or ne
 
 gdsfactory leverages phidl, gdspy and klayout python libraries.
 
-![](https://i.imgur.com/zMpvrWr.png)
+![](https://i.imgur.com/9Sh8Qav.png)
 
 
 ## Getting started
 
-- Run notebooks on [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/gdsfactory/gdsfactory/HEAD)
+- Run notebooks on [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/gdsfactory/binder-sandbox/HEAD)
 - [see slides](https://docs.google.com/presentation/d/1_ZmUxbaHWo_lQP17dlT1FWX-XD8D9w7-FcuEih48d_0/edit#slide=id.g11711f50935_0_5)
 - [read docs](https://gdsfactory.github.io/gdsfactory/)
-- [See YouTube videos](https://www.youtube.com/channel/UCp4ZA52J1pH4XI5gvLjgB_g)
+- [See YouTube videos](https://www.youtube.com/watch?v=KXq09GirynI&list=PLZ3ZVd41isDDnuCirqIhNa8vsaHmbmxqM)
 
 ## Acks
 
@@ -86,4 +87,6 @@ Open source heroes:
 ## Links
 
 - [gdsfactory GitHub repo](https://github.com/gdsfactory/gdsfactory), [docs](https://gdsfactory.github.io/gdsfactory/) and [general updates](https://github.com/gdsfactory/gdsfactory/discussions/547)
+- [linkedIn page](https://www.linkedin.com/company/gdsfactory/posts)
+- [gdsfactory announcenments group](https://groups.google.com/g/gdsfactory)
 - [awesome photonics list](https://github.com/joamatab/awesome_photonics)

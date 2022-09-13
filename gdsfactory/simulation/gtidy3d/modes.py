@@ -12,13 +12,13 @@ TODO:
 
 Maybe:
 
-- combine modes package, mpb and tidy3d APIs
+- combine modes package (based on modesolverpy), MPB and tidy3d APIs
 
 """
 
 import pathlib
 from types import SimpleNamespace
-from typing import Callable, List, Optional, Tuple, Union
+from typing import Callable, Dict, List, Optional, Tuple, Union
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -26,6 +26,7 @@ import pandas as pd
 from matplotlib import colors
 from pydantic import BaseModel, Extra
 from scipy.constants import c as SPEED_OF_LIGHT
+from scipy.interpolate import griddata
 from tidy3d.plugins.mode.solver import compute_modes
 from tqdm.auto import tqdm
 from typing_extensions import Literal
@@ -147,6 +148,7 @@ class Waveguide(BaseModel):
         wg_thickness: thickness waveguide (um).
         ncore: core refractive index.
         nclad: cladding refractive index.
+        dn_dict: unstructured mesh array with columns field "x", "y", "dn" of local index perturbations to be interpolated.
         slab_thickness: thickness slab (um).
         t_box: thickness BOX (um).
         t_clad: thickness cladding (um).
@@ -184,6 +186,7 @@ class Waveguide(BaseModel):
     wg_thickness: float
     ncore: Union[float, Callable[[str], float]]
     nclad: Union[float, Callable[[str], float]]
+    dn_dict: Optional[Dict] = None
     slab_thickness: float
     t_box: float = 2.0
     t_clad: float = 2.0
@@ -245,6 +248,11 @@ class Waveguide(BaseModel):
         slab_thickness = self.slab_thickness
         t_clad = self.t_clad
 
+        inds_core = (
+            (-w / 2 <= Y) & (Y <= w / 2) & (Z >= t_box) & (Z <= t_box + wg_thickness)
+        )
+        inds_slab = (Z >= t_box) & (Z <= t_box + slab_thickness)
+
         n = np.ones_like(Y) * nclad
         n[
             (-w / 2 - t_clad / 2 <= Y)
@@ -253,12 +261,20 @@ class Waveguide(BaseModel):
             & (Z <= t_box + wg_thickness + t_clad)
         ] = nclad
         n[(Z <= 1.0 + slab_thickness + t_clad)] = nclad
-        n[
-            (-w / 2 <= Y) & (Y <= w / 2) & (Z >= t_box) & (Z <= t_box + wg_thickness)
-        ] = ncore
-        n[(Z >= t_box) & (Z <= t_box + slab_thickness)] = (
-            ncore if slab_thickness else nclad
-        )
+        n[inds_core] = ncore
+        n[inds_slab] = ncore if slab_thickness else nclad
+
+        if self.dn_dict is not None:
+            dn = griddata(
+                (self.dn_dict["x"], self.dn_dict["y"]),
+                self.dn_dict["dn"],
+                (Y, Z),
+                method="cubic",
+                fill_value=0,
+            )
+            n[inds_core] += dn[inds_core]
+            n[inds_slab] += dn[inds_slab]
+
         return n
 
     def plot_index(self) -> None:
@@ -281,8 +297,14 @@ class Waveguide(BaseModel):
     def compute_modes(
         self,
         overwrite: bool = False,
+        with_fields: bool = True,
     ) -> None:
-        """Compute modes."""
+        """Compute modes.
+
+        Args:
+            overwrite: overwrite file cache.
+            with_fields: include field data.
+        """
         if hasattr(self, "neffs") and not overwrite:
             return
 
@@ -313,12 +335,14 @@ class Waveguide(BaseModel):
 
         if self.cache and self.filepath and self.filepath.exists():
             data = np.load(self.filepath)
-            self.Ex = data["Ex"]
-            self.Ey = data["Ey"]
-            self.Ez = data["Ez"]
-            self.Hx = data["Hx"]
-            self.Hy = data["Hy"]
-            self.Hz = data["Hz"]
+
+            if with_fields:
+                self.Ex = data["Ex"]
+                self.Ey = data["Ey"]
+                self.Ez = data["Ez"]
+                self.Hx = data["Hx"]
+                self.Hy = data["Hy"]
+                self.Hz = data["Hz"]
             self.neffs = data["neffs"]
             logger.info(f"load {self.filepath} mode data from file cache.")
             return
@@ -348,15 +372,18 @@ class Waveguide(BaseModel):
         self.Hx, self.Hy, self.Hz = Hx, Hy, Hz
         self.neffs = neffs
 
-        data = dict(
-            Ex=self.Ex,
-            Ey=self.Ey,
-            Ez=self.Ez,
-            Hx=self.Hx,
-            Hy=self.Hy,
-            Hz=self.Hz,
-            neffs=self.neffs,
-        )
+        if with_fields:
+            data = dict(
+                Ex=self.Ex,
+                Ey=self.Ey,
+                Ez=self.Ez,
+                Hx=self.Hx,
+                Hy=self.Hy,
+                Hz=self.Hz,
+                neffs=self.neffs,
+            )
+        else:
+            data = dict(neffs=self.neffs)
         if self.filepath:
             np.savez_compressed(self.filepath, **data)
             logger.info(f"write {self.filepath} mode data to file cache.")
@@ -637,7 +664,7 @@ def sweep_width(
         wg = Waveguide(nmodes=nmodes, wg_width=wg_width, **kwargs)
         wg.compute_modes()
         for mode_number in range(1, nmodes + 1):
-            neff[mode_number].append(np.real(wg.neffs[mode_number]))
+            neff[mode_number].append(np.real(wg.neffs[mode_number - 1]))
 
     df = pd.DataFrame(neff)
     df["width"] = width
@@ -753,6 +780,7 @@ __all__ = (
 )
 
 if __name__ == "__main__":
+
     c = Waveguide(
         wavelength=1.55,
         wg_width=500 * nm,
@@ -761,17 +789,17 @@ if __name__ == "__main__":
         ncore=si,
         nclad=sio2,
     )
-    c = WaveguideCoupler(
-        wavelength=1.55,
-        wg_width1=500 * nm,
-        wg_width2=500 * nm,
-        gap=200 * nm,
-        wg_thickness=220 * nm,
-        slab_thickness=100 * nm,
-        ncore=si,
-        nclad=sio2,
-    )
-    print(c.find_coupling())
+    # c = WaveguideCoupler(
+    #     wavelength=1.55,
+    #     wg_width1=500 * nm,
+    #     wg_width2=500 * nm,
+    #     gap=200 * nm,
+    #     wg_thickness=220 * nm,
+    #     slab_thickness=100 * nm,
+    #     ncore=si,
+    #     nclad=sio2,
+    # )
+    # print(c.find_coupling())
     # c.plot_index()
 
     # mode_areas, te, tm = c.compute_mode_properties()

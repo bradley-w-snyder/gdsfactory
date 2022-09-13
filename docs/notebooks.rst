@@ -1,4 +1,4 @@
-Layout driven flow
+Python driven flow
 ===================================
 
 
@@ -21,3 +21,4 @@ Layout driven flow
    notebooks/08_pdk.ipynb
    notebooks/09_pdk_import.ipynb
    notebooks/common_mistakes.ipynb
+   notebooks/11_get_netlist.ipynb

@@ -1,4 +1,5 @@
 """snaps values and coordinates to the GDS grid in nm."""
+from typing import Tuple, Union
 
 import numpy as np
 
@@ -19,11 +20,20 @@ def assert_on_2nm_grid(x: float) -> None:
         raise ValueError(f"{x} needs to be on 2nm grid, try {x_grid}")
 
 
-def snap_to_grid(x: float, nm: int = 0) -> float:
+def snap_to_grid(
+    x: Union[float, Tuple, np.ndarray], nm: int = 1
+) -> Union[float, Tuple, np.ndarray]:
     from gdsfactory.pdk import get_grid_size
 
     nm = nm or int(get_grid_size() * 1000)
-    y = nm * np.round(np.array(x, dtype=float) * 1e3 / nm) / 1e3
+    if nm == 0:
+        return x
+    elif nm < 0:
+        raise ValueError("nm must be an integer tolerance value greater than zero")
+    elif nm == 1:
+        y = np.round(np.asarray(x, dtype=float), 3)
+    else:
+        y = nm * np.round(np.asarray(x, dtype=float) * 1e3 / nm) / 1e3
     if isinstance(x, tuple):
         return tuple(y)
     elif isinstance(x, (int, float, str, np.float_)):

@@ -60,6 +60,7 @@ def get_route(
     input_port: Port,
     output_port: Port,
     bend: ComponentSpec = bend_euler,
+    with_sbend: bool = True,
     straight: ComponentSpec = straight_function,
     taper: Optional[ComponentSpec] = None,
     start_straight_length: float = 0.01,
@@ -68,12 +69,16 @@ def get_route(
     cross_section: Union[CrossSectionSpec, MultiCrossSectionAngleSpec] = "strip",
     **kwargs,
 ) -> Route:
-    """Returns a Manhattan Route between 2 ports. The references are straights, bends and tapers. `get_route` is an automatic version of `get_route_from_steps`.
+    """Returns a Manhattan Route between 2 ports.
+
+    The references are straights, bends and tapers.
+    `get_route` is an automatic version of `get_route_from_steps`.
 
     Args:
         input_port: start port.
         output_port: end port.
         bend: bend spec.
+        with_sbend: add sbend in case there are routing errors.
         straight: straight spec.
         taper: taper spec.
         start_straight_length: length of starting straight.
@@ -133,6 +138,7 @@ def get_route(
         end_straight_length=end_straight_length,
         min_straight_length=min_straight_length,
         bend=bend90,
+        with_sbend=with_sbend,
         cross_section=cross_section,
         **kwargs,
     )

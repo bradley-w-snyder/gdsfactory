@@ -1,8 +1,10 @@
 project = "gdsfactory"
-release = "5.18.5"
+release = "5.28.1"
 copyright = "2020, MIT License"
 
 html_theme = "sphinx_book_theme"
+html_logo = "logo.png"
+
 source_suffix = {
     ".rst": "restructuredtext",
     ".txt": "markdown",
@@ -41,7 +43,7 @@ exclude_patterns = [
 ]
 
 napoleon_use_param = True
-nbsphinx_timeout = 60
+nbsphinx_timeout = 300
 
 source_suffix = {
     ".rst": "restructuredtext",
@@ -58,10 +60,12 @@ myst_html_meta = {
 
 
 html_theme_options = {
+    "logo_only": True,
     "path_to_docs": "docs",
     "repository_url": "https://github.com/gdsfactory/gdsfactory",
     "repository_branch": "master",
     "launch_buttons": {
+        "notebook_interface": "jupyterlab",
         "binderhub_url": "https://mybinder.org/v2/gh/gdsfactory/gdsfactory/HEAD",
         "colab_url": "https://colab.research.google.com",
     },
