@@ -173,11 +173,11 @@ def component_lattice(
       c = gf.components.component_lattice(symbol_to_component=symbol_to_component)
       c.plot()
     """
-    x = crossing45(port_spacing=40)
+    x = gf.get_component("crossing45", port_spacing=40)
     symbol_to_component = symbol_to_component or {
         "C": gf.routing.fanout2x2(component=coupler(), port_spacing=40.0),
         "X": x,
-        "-": compensation_path(x),
+        "-": gf.get_component("compensation_path", x),
     }
 
     # Find y spacing and check that all components have same y spacing
@@ -186,7 +186,6 @@ def component_lattice(
         component = gf.get_component(component)
         # component = component.copy()
         # component.auto_rename_ports_orientation()
-
         for direction in ["W", "E"]:
             ports_dir = get_ports_facing(component.ports, direction)
             ports_dir.sort(key=lambda p: p.y)
