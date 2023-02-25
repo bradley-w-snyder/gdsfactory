@@ -13,6 +13,7 @@ def taper_cross_section(
     npoints: int = 100,
     linear: bool = False,
     width_type: str = "sine",
+    exp: float = 0.5,
     **kwargs
 ) -> Component:
     r"""Returns taper transition between cross_section1 and cross_section2.
@@ -45,6 +46,7 @@ def taper_cross_section(
         cross_section1=gf.get_cross_section(cross_section1),
         cross_section2=gf.get_cross_section(cross_section2, **kwargs),
         width_type="linear" if linear else width_type,
+        exp=exp,
     )
     taper_path = gf.path.straight(length=length, npoints=npoints)
 
