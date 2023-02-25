@@ -498,11 +498,11 @@ def _sinusoidal_transition(y1, y2):
     return sine
 
 
-def _parabolic_transition(y1, y2):
+def _parabolic_transition(y1, y2, exp=0.5):
     dy = y2 - y1
 
     def parabolic(t):
-        return y1 + np.sqrt(t) * dy
+        return y1 + t**exp * dy
 
     return parabolic
 
@@ -699,7 +699,7 @@ def transition(
         elif width_type == "sine":
             width_fun = _sinusoidal_transition(width1, width2)
         elif width_type == "parabolic":
-            width_fun = _parabolic_transition(width1, width2)
+            width_fun = _parabolic_transition(width1, width2, **kwargs)
         else:
             raise ValueError(
                 f"width_type={width_type!r} must be {'sine','linear','parabolic'}"
