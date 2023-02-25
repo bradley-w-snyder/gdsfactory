@@ -496,11 +496,11 @@ def _sinusoidal_transition(y1, y2):
     return sine
 
 
-def _parabolic_transition(y1, y2):
+def _parabolic_transition(y1, y2, exp=0.5):
     dy = y2 - y1
 
     def parabolic(t):
-        return y1 + np.sqrt(t) * dy
+        return y1 + t**exp * dy
 
     return parabolic
 
