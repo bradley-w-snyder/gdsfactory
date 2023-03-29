@@ -6,7 +6,6 @@ from typing import List, Optional, Union
 import numpy as np
 
 import gdsfactory as gf
-from gdsfactory.components.bend_euler import bend_euler
 from gdsfactory.components.straight import straight as straight_function
 from gdsfactory.components.taper import taper as taper_function
 from gdsfactory.components.via_corner import via_corner
@@ -29,7 +28,7 @@ def get_bundle_from_steps(
     ports1: List[Port],
     ports2: List[Port],
     steps: Optional[List[Step]] = None,
-    bend: ComponentSpec = bend_euler,
+    bend: ComponentSpec = "bend_euler",
     straight: ComponentSpec = straight_function,
     taper: Optional[ComponentSpec] = taper_function,
     cross_section: Union[CrossSectionSpec, MultiCrossSectionAngleSpec] = "strip",
