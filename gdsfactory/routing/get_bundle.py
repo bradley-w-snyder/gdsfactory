@@ -54,7 +54,7 @@ def get_bundle(
     separation: float = 3.0,
     extension_length: float = 0.0,
     straight: ComponentSpec = straight_function,
-    bend: ComponentSpec = bend_euler,
+    bend: ComponentSpec = "bend_euler",
     with_sbend: bool = False,
     sort_ports: bool = True,
     cross_section: None | CrossSectionSpec | MultiCrossSectionAngleSpec = "xs_sc",

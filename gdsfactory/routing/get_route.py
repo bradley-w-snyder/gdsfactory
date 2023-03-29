@@ -63,7 +63,7 @@ from gdsfactory.typings import (
 def get_route(
     input_port: Port,
     output_port: Port,
-    bend: ComponentSpec = bend_euler,
+    bend: ComponentSpec = "bend_euler",
     with_sbend: bool = False,
     straight: ComponentSpec = straight_function,
     taper: ComponentSpec | None = None,
