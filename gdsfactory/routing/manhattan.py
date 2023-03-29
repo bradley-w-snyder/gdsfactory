@@ -596,7 +596,7 @@ def get_route_error(
 def round_corners(
     points: Coordinates,
     straight: ComponentSpec = straight_function,
-    bend: ComponentSpec = bend_euler,
+    bend: ComponentSpec = "bend_euler",
     taper: Optional[ComponentSpec] = None,
     straight_fall_back_no_taper: Optional[ComponentSpec] = None,
     mirror_straight: bool = False,
