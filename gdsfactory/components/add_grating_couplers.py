@@ -9,14 +9,12 @@ import gdsfactory as gf
 from gdsfactory.add_labels import get_input_label_text_loopback
 from gdsfactory.cell import cell
 from gdsfactory.component import Component
-from gdsfactory.components.bend_euler import bend_euler
 from gdsfactory.components.grating_coupler_elliptical_trenches import grating_coupler_te
 from gdsfactory.components.spiral_inner_io import (
     spiral_inner_io,
     spiral_inner_io_fiber_single,
 )
 from gdsfactory.components.straight import straight
-from gdsfactory.cross_section import strip
 from gdsfactory.port import select_ports_optical
 from gdsfactory.routing.get_input_labels import get_input_labels
 from gdsfactory.routing.manhattan import round_corners
@@ -91,7 +89,7 @@ def add_grating_couplers_with_loopback_fiber_single(
     get_input_label_text_loopback_function: Callable = get_input_label_text_loopback,
     select_ports: Callable[..., PortsDict] = select_ports_optical,
     with_loopback: bool = True,
-    cross_section: CrossSectionSpec = strip,
+    cross_section: CrossSectionSpec = "strip",
     component_name: Optional[str] = None,
     loopback_xspacing: float = 5.0,
     rotation: int = 90,
@@ -209,14 +207,14 @@ def add_grating_couplers_with_loopback_fiber_array(
     gc_port_name: str = "o1",
     gc_rotation: int = -90,
     straight_separation: float = 5.0,
-    bend: ComponentSpec = bend_euler,
+    bend: ComponentSpec = "bend_euler",
     layer_label: Tuple[int, int] = (200, 0),
     layer_label_loopback: Optional[Tuple[int, int]] = None,
     component_name: Optional[str] = None,
     with_loopback: bool = False,
     nlabels_loopback: int = 2,
     get_input_labels_function: Callable = get_input_labels,
-    cross_section: CrossSectionSpec = strip,
+    cross_section: CrossSectionSpec = "strip",
     select_ports: Callable = select_ports_optical,
     loopback_yspacing: float = 4.0,
     **kwargs,
