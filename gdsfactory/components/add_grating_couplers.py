@@ -8,10 +8,8 @@ import numpy as np
 
 import gdsfactory as gf
 from gdsfactory.component import Component
-from gdsfactory.components.bend_euler import bend_euler
 from gdsfactory.components.grating_coupler_elliptical_trenches import grating_coupler_te
 from gdsfactory.components.straight import straight
-from gdsfactory.cross_section import strip
 from gdsfactory.port import select_ports_optical
 from gdsfactory.routing.manhattan import round_corners
 from gdsfactory.routing.utils import (
@@ -70,7 +68,7 @@ def add_grating_couplers_with_loopback_fiber_single(
     gc_port_name: str = "o1",
     select_ports: Callable[..., PortsDict] = select_ports_optical,
     with_loopback: bool = True,
-    cross_section: CrossSectionSpec = strip,
+    cross_section: CrossSectionSpec = "strip",
     loopback_xspacing: float = 5.0,
     rotation: int = 90,
 ) -> Component:
@@ -150,7 +148,7 @@ def add_grating_couplers_with_loopback_fiber_array(
     gc_port_name: str = "o1",
     gc_rotation: int = -90,
     straight_separation: float = 5.0,
-    bend: ComponentSpec = bend_euler,
+    bend: ComponentSpec = "bend_euler",
     with_loopback: bool = True,
     cross_section: CrossSectionSpec = "xs_sc",
     select_ports: Callable = select_ports_optical,
