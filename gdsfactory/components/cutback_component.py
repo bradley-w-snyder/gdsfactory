@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import gdsfactory as gf
 from gdsfactory.component import Component
-from gdsfactory.components.bend_euler import bend_euler180
 from gdsfactory.components.component_sequence import component_sequence
 from gdsfactory.components.straight import straight
 from gdsfactory.components.taper import taper
@@ -17,7 +16,7 @@ def cutback_component(
     rows: int = 5,
     port1: str = "o1",
     port2: str = "o2",
-    bend180: ComponentSpec = bend_euler180,
+    bend180: ComponentSpec = "bend_euler180",
     mirror: bool = False,
     straight_length: Optional[float] = None,
     cross_section: CrossSectionSpec = "strip",
