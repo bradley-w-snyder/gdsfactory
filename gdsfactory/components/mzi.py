@@ -5,7 +5,6 @@ from functools import partial
 import gdsfactory as gf
 from gdsfactory.cell import cell
 from gdsfactory.component import Component
-from gdsfactory.components.bend_euler import bend_euler
 from gdsfactory.components.coupler import coupler
 from gdsfactory.components.mmi1x2 import mmi1x2
 from gdsfactory.components.mmi2x2 import mmi2x2
@@ -19,7 +18,7 @@ def mzi(
     delta_length: float = 10.0,
     length_y: float = 2.0,
     length_x: float | None = 0.1,
-    bend: ComponentSpec = bend_euler,
+    bend: ComponentSpec = "bend_euler",
     straight: ComponentSpec = straight_function,
     straight_y: ComponentSpec | None = None,
     straight_x_top: ComponentSpec | None = None,

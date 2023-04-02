@@ -8,7 +8,6 @@ from gdsfactory.add_labels import (
     get_input_label_text_dash_loopback,
 )
 from gdsfactory.component import Component, ComponentReference
-from gdsfactory.components.bend_euler import bend_euler
 from gdsfactory.components.grating_coupler_elliptical_trenches import grating_coupler_te
 from gdsfactory.components.straight import straight as straight_function
 from gdsfactory.components.taper import taper as taper_function
@@ -35,7 +34,7 @@ def route_fiber_array(
     component: Component,
     fiber_spacing: str | float = "fiber_array_spacing",
     grating_coupler: ComponentSpecOrList = grating_coupler_te,
-    bend: ComponentSpec = bend_euler,
+    bend: ComponentSpec = "bend_euler",
     straight: ComponentSpec = straight_function,
     taper: ComponentSpec = taper_function,
     fanout_length: float | None = None,
