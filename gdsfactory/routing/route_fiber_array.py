@@ -11,7 +11,6 @@ from gdsfactory.component import Component, ComponentReference
 from gdsfactory.components.grating_coupler_elliptical_trenches import grating_coupler_te
 from gdsfactory.components.straight import straight as straight_function
 from gdsfactory.components.taper import taper as taper_function
-from gdsfactory.cross_section import strip
 from gdsfactory.port import Port, select_ports_optical
 from gdsfactory.routing.get_bundle import get_bundle, get_min_spacing
 from gdsfactory.routing.get_input_labels import get_input_labels_dash
@@ -40,6 +39,7 @@ def route_fiber_array(
     fanout_length: float | None = None,
     max_y0_optical: None = None,
     with_loopback: bool = True,
+    loopback_goes_outward: bool = False,
     nlabels_loopback: int = 2,
     straight_separation: float = 6.0,
     straight_to_grating_spacing: float = 5.0,
@@ -62,7 +62,7 @@ def route_fiber_array(
     get_input_labels_function: Callable | None = get_input_labels_dash,
     select_ports: Callable = select_ports_optical,
     radius: float | None = None,
-    cross_section: CrossSectionSpec = strip,
+    cross_section: CrossSectionSpec = "strip",
     min_length: float = 10e-3,
 ) -> tuple[
     list[ComponentReference | Label],
@@ -488,16 +488,29 @@ def route_fiber_array(
         gc_east = max(gci.size_info.east for gci in grating_couplers)
         y_bot_align_route = gc_east + straight_to_grating_spacing
 
-        points = [
-            p0,
-            p0 + (0, dy),
-            p0 + (dx, dy),
-            p0 + (dx, -y_bot_align_route),
-            p1 + (-dx, -y_bot_align_route),
-            p1 + (-dx, dy),
-            p1 + (0, dy),
-            p1,
-        ]
+        if loopback_goes_outward:
+            dx = 2 * dy + 1
+            points = [
+                p0,
+                p0 + (0, dy),
+                p0 + (-dx, dy),
+                p0 + (-dx, -y_bot_align_route),
+                p1 + (dx, -y_bot_align_route),
+                p1 + (dx, dy),
+                p1 + (0, dy),
+                p1,
+            ]
+        else:
+            points = [
+                p0,
+                p0 + (0, dy),
+                p0 + (dx, dy),
+                p0 + (dx, -y_bot_align_route),
+                p1 + (-dx, -y_bot_align_route),
+                p1 + (-dx, dy),
+                p1 + (0, dy),
+                p1,
+            ]
         io_gratings_lines += [[gca1], [gca2]]
         # elements.extend([gca1, gca2])
 
