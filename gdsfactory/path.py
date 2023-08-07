@@ -705,6 +705,9 @@ def transition(
                 f"width_type={width_type!r} must be {'sine','linear','parabolic'}"
             )
 
+        # We are done with this keyword argument
+        kwargs.pop("exp")
+
         if section1.layer != section2.layer:
             hidden = True
             layer1 = get_layer(section1.layer)
