@@ -73,6 +73,8 @@ def bend_euler(
         return wire_corner(cross_section=x)
 
     c = Component()
+    c.info["p"] = p
+    print(f"Euler bend p = {p}")
     p = euler(
         radius=radius, angle=angle, p=p, use_eff=with_arc_floorplan, npoints=npoints
     )
