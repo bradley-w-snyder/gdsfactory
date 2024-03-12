@@ -616,6 +616,7 @@ def transition(
     cross_section1: CrossSectionSpec,
     cross_section2: CrossSectionSpec,
     width_type: WidthTypes | Callable = "sine",
+    exp: float = 0.5,
 ) -> Transition:
     """Returns a smoothly-transitioning between two CrossSections.
 
@@ -647,9 +648,7 @@ def transition(
         )
 
     return Transition(
-        cross_section1=X1,
-        cross_section2=X2,
-        width_type=width_type,
+        cross_section1=X1, cross_section2=X2, width_type=width_type, exp=exp
     )
 
 
@@ -1054,7 +1053,7 @@ def extrude_transition(
         elif width_type == "sine":
             width = _sinusoidal_transition(width1, width2)
         elif width_type == "parabolic":
-            width = _parabolic_transition(width1, width2)
+            width = _parabolic_transition(width1, width2, transition.exp)
         elif callable(width_type):
 
             def width_func(t):

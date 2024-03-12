@@ -383,6 +383,7 @@ class Transition(CrossSection):
     cross_section1: CrossSectionSpec
     cross_section2: CrossSectionSpec
     width_type: WidthTypes | Callable = "sine"
+    exp: float = 0.5
 
     @field_serializer("width_type")
     def serialize_width(self, width_type: WidthTypes | Callable) -> str | None:
