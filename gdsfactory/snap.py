@@ -59,7 +59,8 @@ def snap_to_grid(
     from gdsfactory.pdk import get_grid_size
 
     nm = nm or int(get_grid_size() * 1000 * grid_factor)
-    y = nm * np.round(np.asarray(x, dtype=float) * 1e3 / nm) / 1e3
+    # BWS: y = nm * np.round(np.asarray(x, dtype=float) * 1e3 / nm) / 1e3
+    y = nm * np.floor(np.asarray(x, dtype=float) * 1e3 / nm) / 1e3
 
     if isinstance(x, tuple):
         return tuple(y)

@@ -27,7 +27,8 @@ from gdsfactory.component_layout import (
 from gdsfactory.config import CONF
 from gdsfactory.cross_section import CrossSection, Section, Transition
 from gdsfactory.port import Port
-from gdsfactory.snap import snap_to_grid2x
+from gdsfactory.snap import snap_to_grid as snap_to_grid1x
+from gdsfactory.snap import snap_to_grid2x  # BWS
 from gdsfactory.typings import (
     ComponentSpec,
     Coordinates,
@@ -725,7 +726,7 @@ def extrude(
     shear_angle_start: float | None = None,
     shear_angle_end: float | None = None,
     allow_offgrid: bool | None = None,
-    snap_to_grid: bool = False,
+    snap_to_grid: bool = True,  # BWS
     add_bbox: bool = True,
 ) -> Component:
     """Returns Component extruding a Path with a cross_section.
@@ -786,7 +787,8 @@ def extrude(
 
     for section in x.sections:
         p_sec = p.copy()
-        width = snap_to_grid2x(section.width)
+        # BWS: width = snap_to_grid2x(section.width)
+        width = snap_to_grid1x(section.width)
         offset = section.offset
         layer = get_layer(section.layer)
         port_names = section.port_names
@@ -895,11 +897,12 @@ def extrude(
             points1 = _simplify(points1, tolerance=with_simplify)
             points2 = _simplify(points2, tolerance=with_simplify)
 
+        if snap_to_grid:
+            points1 = snap_to_grid1x(points1)
+            points2 = snap_to_grid1x(points2)
+
         # Join points together
         points_poly = np.concatenate([points1, points2[::-1, :]])
-
-        if snap_to_grid:
-            points_poly = np.round(points_poly, 3)
 
         layers = layer if hidden else [layer, layer]
         if not hidden and p_sec.length() >= 1e-3:
@@ -1134,6 +1137,8 @@ def extrude_transition(
             points2 = _simplify(points2, tolerance=tolerance)
 
         # Join points together
+        points1 = snap_to_grid1x(points1)  # BWS
+        points2 = snap_to_grid1x(points2)  # BWS
         points_poly = np.concatenate([points1, points2[::-1, :]])
 
         layers = layer if hidden else [layer, layer]
@@ -1144,7 +1149,8 @@ def extrude_transition(
         if port_names[0] is not None:
             port_width = width1
             port_orientation = (p_sec.start_angle + 180) % 360
-            center = points[0]
+            center = np.average([points1[0], points2[0]], axis=0)  # BWS
+            # center = points[0]
             face = [points1[0], points2[0]]
             face = [_rotated_delta(point, center, port_orientation) for point in face]
 
@@ -1164,7 +1170,8 @@ def extrude_transition(
         if port_names[1] is not None:
             port_width = width2
             port_orientation = (p_sec.end_angle) % 360
-            center = points[-1]
+            center = np.average([points1[-1], points2[-1]], axis=0)  # BWS
+            # center = points[-1]
             face = [points1[-1], points2[-1]]
             face = [_rotated_delta(point, center, port_orientation) for point in face]
 
