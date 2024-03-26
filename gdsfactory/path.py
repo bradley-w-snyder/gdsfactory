@@ -994,6 +994,8 @@ def extrude_transition(
     transition: Transition,
     shear_angle_start: float | None = None,
     shear_angle_end: float | None = None,
+    start_angle: float | None = None,
+    end_angle: float | None = None,
 ) -> Component:
     """Extrudes a path along a transition.
 
@@ -1079,8 +1081,8 @@ def extrude_transition(
 
         p_sec.offset(offset)
         offset = 0
-        end_angle = p_sec.end_angle
-        start_angle = p_sec.start_angle
+        end_angle = p_sec.end_angle if end_angle is None else end_angle
+        start_angle = p_sec.start_angle if start_angle is None else start_angle
         points = p_sec.points
         if callable(width):
             # Compute lengths
@@ -1092,6 +1094,8 @@ def extrude_transition(
         dy = offset + width / 2
         # _points = _shear_face(points, dy, shear_angle_start, shear_angle_end)
 
+        start_angle = 0.0
+        end_angle = 0.0
         points1 = p_sec._centerpoint_offset_curve(
             points,
             offset_distance=dy,

@@ -18,6 +18,8 @@ def taper_cross_section(
     linear: bool = False,
     width_type: str = "sine",
     exp: float = 0.5,
+    start_angle: float | None = None,
+    end_angle: float | None = None,
     **kwargs,
 ) -> Component:
     r"""Returns taper transition between cross_section1 and cross_section2.
@@ -56,7 +58,9 @@ def taper_cross_section(
     taper_path = gf.path.straight(length=length, npoints=npoints)
 
     c = gf.Component()
-    ref = c << gf.path.extrude_transition(taper_path, transition=transition)
+    ref = c << gf.path.extrude_transition(
+        taper_path, transition=transition, start_angle=start_angle, end_angle=end_angle
+    )
     c.add_ports(ref.ports)
     c.absorb(ref)
 
