@@ -48,6 +48,7 @@ def snap_to_grid(
     x: Value,
     nm: int | None = None,
     grid_factor: int = 1,
+    midpoint: bool = False,
 ) -> Value:
     """snap x to grid_sizes
 
@@ -59,9 +60,11 @@ def snap_to_grid(
     from gdsfactory.pdk import get_grid_size
 
     nm = nm or int(get_grid_size() * 1000 * grid_factor)
+    if midpoint:
+        nm *= 0.5
     # BWS: y = nm * np.round(np.asarray(x, dtype=float) * 1e3 / nm) / 1e3
     # 0.01 is a fudge factor for when you have 0.9999999 and don't want that to go to 0, but to 1 instead
-    y = nm * np.floor(np.asarray(x, dtype=float) * 1e3 / nm + 0.01) / 1e3
+    y = nm * np.floor(np.asarray(x, dtype=float) * 1e3 / nm + 0.49999) / 1e3
 
     if isinstance(x, tuple):
         return tuple(y)
