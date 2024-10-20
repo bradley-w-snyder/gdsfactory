@@ -49,6 +49,7 @@ def snap_to_grid(
     nm: int | None = None,
     grid_factor: int = 1,
     midpoint: bool = False,
+    fudge_factor: float = 0.500001,
 ) -> Value:
     """snap x to grid_sizes
 
@@ -64,7 +65,7 @@ def snap_to_grid(
         nm *= 0.5
     # BWS: y = nm * np.round(np.asarray(x, dtype=float) * 1e3 / nm) / 1e3
     # 0.01 is a fudge factor for when you have 0.9999999 and don't want that to go to 0, but to 1 instead
-    y = nm * np.floor(np.asarray(x, dtype=float) * 1e3 / nm + 0.49999) / 1e3
+    y = nm * np.floor(np.asarray(x, dtype=float) * 1e3 / nm + fudge_factor) / 1e3
 
     if isinstance(x, tuple):
         return tuple(y)
@@ -72,6 +73,9 @@ def snap_to_grid(
         return float(y)
     return y
 
+
+snap_up = snap_to_grid
+snap_down = partial(snap_to_grid, grid_factor=0.499999)
 
 snap_to_grid2x = partial(snap_to_grid, grid_factor=2)
 

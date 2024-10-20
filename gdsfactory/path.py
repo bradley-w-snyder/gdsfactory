@@ -912,7 +912,9 @@ def extrude(
         if port_names[0] is not None:
             port_width = width if np.isscalar(width) else width[0]
             port_orientation = (p_sec.start_angle + 180) % 360
-            center = np.average([points1[0], points2[0]], axis=0)
+            center = np.average([points1[0], points2[0]], axis=0) + _rotate_points(
+                np.array([0, offset]), p_sec.start_angle
+            )
             face = [points1[0], points2[0]]
             face = [_rotated_delta(point, center, port_orientation) for point in face]
 
@@ -933,7 +935,9 @@ def extrude(
         if port_names[1] is not None:
             port_width = width if np.isscalar(width) else width[-1]
             port_orientation = (p_sec.end_angle) % 360
-            center = np.average([points1[-1], points2[-1]], axis=0)
+            center = np.average([points1[-1], points2[-1]], axis=0) + _rotate_points(
+                np.array([0, offset]), p_sec.end_angle
+            )
             face = [points1[-1], points2[-1]]
             face = [_rotated_delta(point, center, port_orientation) for point in face]
 
@@ -1094,8 +1098,8 @@ def extrude_transition(
         dy = offset + width / 2
         # _points = _shear_face(points, dy, shear_angle_start, shear_angle_end)
 
-        start_angle = 0.0
-        end_angle = 0.0
+        # start_angle = 0.0
+        # end_angle = 0.0
         points1 = p_sec._centerpoint_offset_curve(
             points,
             offset_distance=dy,
@@ -1153,7 +1157,9 @@ def extrude_transition(
         if port_names[0] is not None:
             port_width = width1
             port_orientation = (p_sec.start_angle + 180) % 360
-            center = np.average([points1[0], points2[0]], axis=0)  # BWS
+            center = np.average([points1[0], points2[0]], axis=0) + _rotate_points(
+                np.array([0, section1.offset]), p_sec.start_angle
+            )
             # center = points[0]
             face = [points1[0], points2[0]]
             face = [_rotated_delta(point, center, port_orientation) for point in face]
@@ -1174,7 +1180,9 @@ def extrude_transition(
         if port_names[1] is not None:
             port_width = width2
             port_orientation = (p_sec.end_angle) % 360
-            center = np.average([points1[-1], points2[-1]], axis=0)  # BWS
+            center = np.average([points1[-1], points2[-1]], axis=0) + _rotate_points(
+                np.array([0, section2.offset]), p_sec.end_angle
+            )
             # center = points[-1]
             face = [points1[-1], points2[-1]]
             face = [_rotated_delta(point, center, port_orientation) for point in face]
