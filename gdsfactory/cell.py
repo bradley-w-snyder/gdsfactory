@@ -206,6 +206,7 @@ def cell(
 
         name = kwargs.pop("name", None)
         prefix = kwargs.pop("prefix", None)
+        with_hash = kwargs.pop("with_hash", None)
         metadata = info or {}  # noqa
 
         if name:
